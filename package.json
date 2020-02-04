@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/nkernis/plead_for_pills/issues"
   },
-  "homepage": "https://github.com/nkernis/plead_for_pills#readme"
+  "homepage": "https://github.com/nkernis/plead_for_pills#readme",
+  "dependencies": {
+    "revai-node-sdk": "^2.2.2"
+  }
 }
