@@ -3,6 +3,8 @@ TODO
 .vagrant
 certs
 *env.js
+secrets
+tmp/
 
 # Logs
 logs
