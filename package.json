@@ -1,0 +1,19 @@
+{
+  "name": "plead_for_pills",
+  "version": "0.0.0",
+  "description": "Plead for your pills",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nkernis/plead_for_pills.git"
+  },
+  "author": "Ben Moll and Noah Kernis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nkernis/plead_for_pills/issues"
+  },
+  "homepage": "https://github.com/nkernis/plead_for_pills#readme"
+}
