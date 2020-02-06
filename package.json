@@ -18,8 +18,8 @@
   },
   "homepage": "https://github.com/nkernis/plead_for_pills#readme",
   "dependencies": {
-    "mic": "^2.1.2",
+    "bumblebee-hotword-node": "0.0.4",
     "pigpio": "^3.0.0",
-    "revai-node-sdk": "^2.2.2"
+    "sonus": "^1.0.3"
   }
 }
