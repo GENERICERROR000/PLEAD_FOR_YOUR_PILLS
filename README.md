@@ -22,3 +22,8 @@ Code for a pill box that requires the user to plead with it in order to receive 
 - [ ] Parse txt for pleading language
 - [ ] Servo
 - [ ] Build box-thing
+
+https://github.com/Kitt-AI/snowboy
+https://github.com/gillesdemey/node-record-lpcm16
+	https://github.com/evancohen/sonus
+https://github.com/fivdi/pigpio

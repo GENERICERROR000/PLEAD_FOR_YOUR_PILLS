@@ -22,7 +22,7 @@ const hotwords = [
 
 hotwords.forEach(hotword => {
 	models.add({
-		file: "resources/models" + hotword + ".umdl",
+		file: "resources/models/" + hotword + ".pmdl",
 		sensitivity: '0.5',
 		hotwords: hotword
 	})
@@ -58,12 +58,16 @@ detector.on('hotword', function (index, hotword, buffer) {
 	console.log('hotword', index, hotword);
 });
 
-const mic = record.start({
+const listener = record.record({
 	threshold: 0,
-	verbose: true
+	verbose: true,
+	recorder: "arecord",
+	device: "plughw:1,0",
+	silence: '1.0',
+	endOnSilence: true
 });
 
-mic.pipe(detector);
+listener.stream().pipe(detector);
 
 // const language = "en-US"
 // const recordProgram = "arecord"
