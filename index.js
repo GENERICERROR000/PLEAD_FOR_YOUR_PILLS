@@ -22,17 +22,17 @@ const hotwords = [
 
 hotwords.forEach(hotword => {
 	models.add({
-		file: "./resources/" + hotword + ".umdl",
+		file: "resources/" + hotword + ".umdl",
 		sensitivity: '0.5',
 		hotwords: hotword
 	})
 })
 
 const detector = new Detector({
-	resource: "resources/common.res",
+	resource: "node_modules/snowboy/resources/common.res",
 	models: models,
 	audioGain: 2.0,
-	applyFrontend: true
+	language: 'en-US'
 });
 
 detector.on('silence', function () {
