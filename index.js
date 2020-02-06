@@ -22,7 +22,7 @@ const hotwords = [
 
 hotwords.forEach(hotword => {
 	models.add({
-		file: "resources/" + hotword + ".umdl",
+		file: "resources/models" + hotword + ".umdl",
 		sensitivity: '0.5',
 		hotwords: hotword
 	})
