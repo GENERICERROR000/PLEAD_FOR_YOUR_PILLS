@@ -4,6 +4,7 @@
   "description": "Plead for your pills",
   "main": "index.js",
   "scripts": {
+	"run": "REVAI_TOKEN=$(cat .secrets) node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

@@ -15,6 +15,7 @@ Code for a pill box that requires the user to plead with it in order to receive 
 	- [x] Connect
 	- [X] Token
 	- [ ] Stream audio instead of file
+		- https://github.com/revdotcom/revai-node-sdk#streaming-audio
 	- [ ] Reduce Data
 		- No punctuation
 		- Is txt quicker than json?
