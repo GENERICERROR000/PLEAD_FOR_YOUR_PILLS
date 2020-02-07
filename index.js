@@ -105,10 +105,12 @@ var pleadsNeeded = 3;
 var pleads = 0;
 
 function receivedPlead() {
+	pleads += 1;
+
 	if (pleads == pleadsNeeded) {
 		handleUnlock();
 	} else {
-		handlePlead();
+		blinkLed(redLed, 1, 1000, 2)
 	}
 }
 
@@ -120,12 +122,6 @@ function handleUnlock() {
 		closePillBox();
 		resetPleads();
 	}, 120000);
-}
-
-function handlePlead() {
-	pleads += 1;
-
-	blinkLed(redLed, 1, 1000, 2)
 }
 
 function resetPleads() {
