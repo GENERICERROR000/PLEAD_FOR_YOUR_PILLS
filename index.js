@@ -1,33 +1,46 @@
+const Pigpio = require('pigpio');
 const Snowboy = require('snowboy');
-// const Gpio = require('pigpio').Gpio;
 const record = require('node-record-lpcm16');
 
-const Detector = Snowboy.Detector;
+// NOTE: -----> State <-----
+
+const state = {
+	pleadsNeeded: 1,
+	pleads: 0
+};
+
+// NOTE: -----> Setup GPIO <-----
+
+const Gpio = Pigpio.Gpio;
+
+// servo pulses at 50Hz on the GPIO
+// 0 (off), 500 (most anti-clockwise) to 2500 (most clockwise)
+// pulse width in microseconds
+const pulseWidthOpen = 1000;
+const pulseWidthClose = 2000;
+
+const motor = new Gpio(10, {
+	mode: Gpio.OUTPUT
+});
+
+function openPillBox() {
+	console.log('Unlocking Pill Box...');
+
+	motor.servoWrite(pulseWidthOpen);
+}
+
+function closePillBox() {
+	console.log('Locking Pill Box...');
+
+	motor.servoWrite(pulseWidthClose);
+}
+
+// NOTE: -----> Create Listener <-----
+
 const Models = Snowboy.Models;
+const Detector = Snowboy.Detector;
 
 const models = new Models();
-
-const hotwords = [
-	'begging',
-	'die',
-	'give',
-	'have',
-	'help',
-	'let',
-	'life',
-	'live',
-	'need',
-	'please'
-]
-
-hotwords.forEach(hotword => {
-	models.add({
-		file: "resources/models/" + hotword + ".pmdl",
-		sensitivity: '0.5',
-		hotwords: hotword
-	})
-})
-
 const detector = new Detector({
 	resource: "node_modules/snowboy/resources/common.res",
 	models: models,
@@ -35,19 +48,36 @@ const detector = new Detector({
 	language: 'en-US'
 });
 
+const hotwords = [
+	['begging', "0.5"],
+	['die', "0.5"],
+	['give', "0.5"],
+	['have', "0.5"],
+	['help', "0.5"],
+	['let', "0.5"],
+	['life', "0.5"],
+	['live', "0.5"],
+	['need', "0.5"],
+	['please', "0.5"]
+];
+
+hotwords.forEach(hotword => {
+	models.add({
+		file: "resources/models/" + hotword[0] + ".pmdl",
+		sensitivity: hotword[1],
+		hotwords: hotword[0]
+	})
+})
+
 detector.on('silence', function () {
 	console.log('silence');
 });
 
-detector.on('sound', function (buffer) {
-	// <buffer> contains the last chunk of the audio that triggers the "sound"
-	// event. It could be written to a wav stream.
-	console.log('sound');
-});
-
-detector.on('error', function () {
-	console.log('error');
-});
+// detector.on('sound', function (buffer) {
+// 	// <buffer> contains the last chunk of the audio that triggers the "sound"
+// 	// event. It could be written to a wav stream.
+// 	console.log('sound');
+// });
 
 detector.on('hotword', function (index, hotword, buffer) {
 	// <buffer> contains the last chunk of the audio that triggers the "hotword"
@@ -56,6 +86,10 @@ detector.on('hotword', function (index, hotword, buffer) {
 	// data after the hotword.
 	// console.log(buffer);
 	console.log('hotword', index, hotword);
+});
+
+detector.on('error', function () {
+	console.log('error');
 });
 
 const listener = record.record({
@@ -67,28 +101,6 @@ const listener = record.record({
 	endOnSilence: true
 });
 
+// NOTE: -----> Start Listening <-----
+
 listener.stream().pipe(detector);
-
-// const language = "en-US"
-// const recordProgram = "arecord"
-// const device = "plughw:1,0"
-
-// const sonus = Sonus.init({
-// 	hotwords,
-// 	language,
-// 	recordProgram,
-// 	device
-// }, {})
-
-// Sonus.start(sonus)
-
-// sonus.on('begging', (index, keyword) => console.log("begging"))
-// sonus.on('die', (index, keyword) => console.log("die"))
-// sonus.on('give', (index, keyword) => console.log("give"))
-// sonus.on('have', (index, keyword) => console.log("have"))
-// sonus.on('help', (index, keyword) => console.log("help"))
-// sonus.on('let', (index, keyword) => console.log("let"))
-// sonus.on('life', (index, keyword) => console.log("life"))
-// sonus.on('live', (index, keyword) => console.log("live"))
-// sonus.on('need', (index, keyword) => console.log("need"))
-// sonus.on('please', (index, keyword) => console.log("please"))
