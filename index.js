@@ -140,16 +140,16 @@ const Detector = Snowboy.Detector;
 const models = new Models();
 
 const hotwords = [
-	["begging", "0.4"],
-	["die", "0.4"],
-	["give", "0.4"],
-	["have", "0.4"],
-	["help", "0.4"],
-	["let", "0.4"],
-	["life", "0.4"],
-	["live", "0.4"],
-	["need", "0.4"],
-	["please", "0.4"]
+	["begging", "0.5"],
+	["die", "0.5"],
+	["give", "0.5"],
+	["have", "0.5"],
+	["help", "0.5"],
+	["let", "0.5"],
+	["life", "0.5"],
+	["live", "0.5"],
+	["need", "0.5"],
+	["please", "0.5"]
 ];
 
 hotwords.forEach(hw => {
