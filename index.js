@@ -23,6 +23,15 @@ const Pigpio = require('pigpio');
 const Snowboy = require('snowboy');
 const Record = require('node-record-lpcm16');
 
+// NOTE: -----> Define Listener <-----
+
+const listener = Record.record({
+	verbose: true,
+	recorder: "arecord",
+	device: "plughw:1,0",
+	endOnSilence: false
+});
+
 // NOTE: -----> Setup GPIO <-----
 
 const Gpio = Pigpio.Gpio;
@@ -36,7 +45,7 @@ const greenLed = new Gpio(6, {
 });
 
 var ledBlinkCount = 0;
-// blinkLed(redLed, 1, 500);
+
 function blinkLed(led, numberBlinks, time, blinkCount=1) {
 	// ledBlinkCount += 1;
 	ledOn(led);
@@ -78,12 +87,16 @@ function openPillBox() {
 	console.log('Unlocking Pill Box...');
 
 	motor.servoWrite(pulseWidthOpen);
+	
+	listener.pause();
 }
 
 function closePillBox() {
 	console.log('Locking Pill Box...');
 
 	motor.servoWrite(pulseWidthClose);
+
+	listener.resume();
 }
 
 // NOTE: -----> Plead State <-----
@@ -100,7 +113,7 @@ function receivedPlead() {
 }
 
 function handleUnlock() {
-	// blinkLed(greenLed, 1, 120000)
+	blinkLed(greenLed, 1, 120000)
 	openPillBox();
 
 	setTimeout(() => {
@@ -112,7 +125,7 @@ function handleUnlock() {
 function handlePlead() {
 	pleads += 1;
 
-	// blinkLed(redLed, 1, 1000, 2)
+	blinkLed(redLed, 1, 1000, 2)
 }
 
 function resetPleads() {
@@ -127,16 +140,16 @@ const Detector = Snowboy.Detector;
 const models = new Models();
 
 const hotwords = [
-	["begging", "0.5"],
-	["die", "0.5"],
-	["give", "0.5"],
-	["have", "0.5"],
-	["help", "0.5"],
-	["let", "0.5"],
-	["life", "0.5"],
-	["live", "0.5"],
-	["need", "0.5"],
-	["please", "0.5"]
+	["begging", "0.4"],
+	["die", "0.4"],
+	["give", "0.4"],
+	["have", "0.4"],
+	["help", "0.4"],
+	["let", "0.4"],
+	["life", "0.4"],
+	["live", "0.4"],
+	["need", "0.4"],
+	["please", "0.4"]
 ];
 
 hotwords.forEach(hw => {
@@ -166,13 +179,6 @@ detector.on('hotword', function (i, hw) {
 
 detector.on('error', function () {
 	console.log('error');
-});
-
-const listener = Record.record({
-	verbose: true,
-	recorder: "arecord",
-	device: "plughw:1,0",
-	endOnSilence: false
 });
 
 // NOTE: -----> Start Everything <-----
