@@ -1,10 +1,29 @@
+/*
+	Pill Box that you plead with to unlock and 
+	get your pills.
+
+	Uses the Snowboy to listen for 'hotwords'. It listens
+	for any of the hotwords. If heard n times in 2 minutes
+	the box unlocks. After 2 minutes, n is set to a random 
+	number between 1 and 6 and the box locks.
+
+	LED's flash when box turns on. When a plead is received
+	but more are needed, the red LED flashes. When enough
+	pleads are received, the green LED stays on for 2 minutes.
+
+	created 02/05/2020
+	Noah Kernis and Ben Moll
+*/
+
 const Pigpio = require('pigpio');
 const Snowboy = require('snowboy');
-const record = require('node-record-lpcm16');
+const Record = require('node-record-lpcm16');
 
 // NOTE: -----> Setup GPIO <-----
 
 const Gpio = Pigpio.Gpio;
+
+var ledBlinkCount = 0;
 
 // WARN: SET CORRECT PIN NUMBER
 const redLed = new Gpio(8, {
@@ -17,11 +36,28 @@ const greenLed = new Gpio(9, {
 });
 
 function ledOn(led) {
-	led.digitalWrite(1)
+	led.digitalWrite(1);
 }
 
 function ledOff(led) {
-	led.digitalWrite(0)
+	led.digitalWrite(0);
+}
+
+function blinkLed(led, numberBlinks, time, blinkCount=1) {
+	ledBlinkCount += 1;
+	ledOn(led);
+
+	setTimeout(() => {
+		ledOff(led);
+
+		if (ledBlinkCount == blinkCount) {
+			ledBlinkCount = 0;
+		} else {
+			setTimeout(() => {
+				blinkLed(led, numberBlinks, time, blinkCount);
+			}, time)
+		}
+	}, time);
 }
 
 // servo pulses at 50Hz on the GPIO
@@ -63,11 +99,10 @@ function receivedPlead() {
 }
 
 function handleUnlock() {
-	ledOn(greenLed);
+	blinkLed(greenLed, 1, 1000)
 	openPillBox();
 
 	setTimeout(() => {
-		ledOff(greenLed);
 		closePillBox();
 		resetPleads();
 	}, 120000);
@@ -75,11 +110,8 @@ function handleUnlock() {
 
 function handlePlead() {
 	pleads += 1;
-	ledOn(redLed);
 
-	setTimeout(() => {
-		ledOff(redLed);
-	}, 1000);
+	blinkLed(greenLed, 1, 500, 2)
 }
 
 function resetPleads() {
@@ -94,9 +126,10 @@ const Detector = Snowboy.Detector;
 const models = new Models();
 const detector = new Detector({
 	resource: "node_modules/snowboy/resources/common.res",
+	language: 'en-US',
 	models: models,
 	audioGain: 2.0,
-	language: 'en-US'
+	applyFrontend: false
 });
 
 const hotwords = [
@@ -120,7 +153,7 @@ hotwords.forEach(hotword => {
 	})
 })
 
-detector.on('hotword', function (index, hotword, buffer) {
+detector.on('hotword', function (i, hotword) {
 	console.log('hotword', hotword);
 	receivedPlead();
 });
@@ -129,7 +162,7 @@ detector.on('error', function () {
 	console.log('error');
 });
 
-const listener = record.record({
+const listener = Record.record({
 	threshold: 0,
 	verbose: true,
 	recorder: "arecord",
@@ -140,14 +173,11 @@ const listener = record.record({
 
 // NOTE: -----> Start Everything <-----
 
-// flash leds
-ledOn(redLed);
-ledOn(greenLed);
+console.log('Starting listener...');
 
-setTimeout(() => {
-	ledOff(redLed);
-	ledOff(greenLed);
-}, 200);
+// flash leds
+blinkLed(REDLed, 1, 500);
+blinkLed(greenLed, 1, 500);
 
 // make sure box is closed
 closePillBox();
