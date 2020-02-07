@@ -2,23 +2,37 @@ const Pigpio = require('pigpio');
 const Snowboy = require('snowboy');
 const record = require('node-record-lpcm16');
 
-// NOTE: -----> State <-----
-
-const state = {
-	pleadsNeeded: 1,
-	pleads: 0
-};
-
 // NOTE: -----> Setup GPIO <-----
 
 const Gpio = Pigpio.Gpio;
 
+// WARN: SET CORRECT PIN NUMBER
+const redLed = new Gpio(8, {
+	mode: Gpio.OUTPUT
+});
+
+// WARN: SET CORRECT PIN NUMBER
+const greenLed = new Gpio(9, {
+	mode: Gpio.OUTPUT
+});
+
+function ledOn(led) {
+	led.digitalWrite(1)
+}
+
+function ledOff(led) {
+	led.digitalWrite(0)
+}
+
 // servo pulses at 50Hz on the GPIO
 // 0 (off), 500 (most anti-clockwise) to 2500 (most clockwise)
 // pulse width in microseconds
+// WARN: Set Correct number
 const pulseWidthOpen = 1000;
+// WARN: Set correct number
 const pulseWidthClose = 2000;
 
+// WARN: SET CORRECT PIN NUMBER
 const motor = new Gpio(10, {
 	mode: Gpio.OUTPUT
 });
@@ -33,6 +47,43 @@ function closePillBox() {
 	console.log('Locking Pill Box...');
 
 	motor.servoWrite(pulseWidthClose);
+}
+
+// NOTE: -----> Plead State <-----
+
+var pleadsNeeded = 1;
+var pleads = 0;
+
+function receivedPlead() {
+	if (pleads == pleadsNeeded) {
+		handleUnlock();
+	} else {
+		handlePlead();
+	}
+}
+
+function handleUnlock() {
+	ledOn(greenLed);
+	openPillBox();
+
+	setTimeout(() => {
+		ledOff(greenLed);
+		closePillBox();
+		resetPleads();
+	}, 120000);
+}
+
+function handlePlead() {
+	pleads += 1;
+	ledOn(redLed);
+
+	setTimeout(() => {
+		ledOff(redLed);
+	}, 1000);
+}
+
+function resetPleads() {
+	pleads = 0;
 }
 
 // NOTE: -----> Create Listener <-----
@@ -69,23 +120,9 @@ hotwords.forEach(hotword => {
 	})
 })
 
-detector.on('silence', function () {
-	console.log('silence');
-});
-
-// detector.on('sound', function (buffer) {
-// 	// <buffer> contains the last chunk of the audio that triggers the "sound"
-// 	// event. It could be written to a wav stream.
-// 	console.log('sound');
-// });
-
 detector.on('hotword', function (index, hotword, buffer) {
-	// <buffer> contains the last chunk of the audio that triggers the "hotword"
-	// event. It could be written to a wav stream. You will have to use it
-	// together with the <buffer> in the "sound" event if you want to get audio
-	// data after the hotword.
-	// console.log(buffer);
-	console.log('hotword', index, hotword);
+	console.log('hotword', hotword);
+	receivedPlead();
 });
 
 detector.on('error', function () {
@@ -101,6 +138,19 @@ const listener = record.record({
 	endOnSilence: true
 });
 
-// NOTE: -----> Start Listening <-----
+// NOTE: -----> Start Everything <-----
 
+// flash leds
+ledOn(redLed);
+ledOn(greenLed);
+
+setTimeout(() => {
+	ledOff(redLed);
+	ledOff(greenLed);
+}, 200);
+
+// make sure box is closed
+closePillBox();
+
+// start listening 
 listener.stream().pipe(detector);
