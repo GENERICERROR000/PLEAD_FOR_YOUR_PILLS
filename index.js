@@ -36,21 +36,21 @@ const greenLed = new Gpio(6, {
 });
 
 var ledBlinkCount = 0;
-
+// blinkLed(redLed, 1, 500);
 function blinkLed(led, numberBlinks, time, blinkCount=1) {
-	ledBlinkCount += 1;
+	// ledBlinkCount += 1;
 	ledOn(led);
 
 	setTimeout(() => {
 		ledOff(led);
 
-		if (ledBlinkCount == blinkCount) {
-			ledBlinkCount = 0;
-		} else {
-			setTimeout(() => {
-				blinkLed(led, numberBlinks, time, blinkCount);
-			}, time);
-		}
+		// if (ledBlinkCount == blinkCount) {
+		// 	ledBlinkCount = 0;
+		// } else {
+		// 	setTimeout(() => {
+		// 		blinkLed(led, numberBlinks, time, blinkCount);
+		// 	}, time);
+		// }
 	}, time);
 }
 
