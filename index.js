@@ -127,16 +127,16 @@ const Detector = Snowboy.Detector;
 const models = new Models();
 
 const hotwords = [
-	["begging", "0.2"],
-	["die", "0.2"],
-	["give", "0.2"],
-	["have", "0.2"],
-	["help", "0.2"],
-	["let", "0.2"],
-	["life", "0.2"],
-	["live", "0.2"],
-	["need", "0.2"],
-	["please", "0.2"]
+	["begging", "0.5"],
+	["die", "0.5"],
+	["give", "0.5"],
+	["have", "0.5"],
+	["help", "0.5"],
+	["let", "0.5"],
+	["life", "0.5"],
+	["live", "0.5"],
+	["need", "0.5"],
+	["please", "0.5"]
 ];
 
 hotwords.forEach(hw => {
@@ -169,7 +169,6 @@ detector.on('error', function () {
 });
 
 const listener = Record.record({
-	threshold: 0,
 	verbose: true,
 	recorder: "arecord",
 	device: "plughw:1,0",
@@ -188,9 +187,4 @@ blinkLed(greenLed, 1, 500);
 closePillBox();
 
 // start listening 
-listener
-.stream()
-.on('error', err => {
-	console.error('recorder threw an error:', err)
-})
-.pipe(detector);
+listener.stream().pipe(detector);
