@@ -146,16 +146,16 @@ const hotwords = [
 	['please', "0.5"]
 ];
 
-hotwords.forEach(hotword => {
+hotwords.forEach(hw => {
 	models.add({
-		file: "resources/models/" + hotword[0] + ".pmdl",
-		sensitivity: hotword[1],
-		hotwords: hotword[0]
+		file: "resources/models/" + hw[0] + ".pmdl",
+		sensitivity: hw[1],
+		hotwords: hw[0]
 	})
 })
 
-detector.on('hotword', function (i, hotword) {
-	console.log('hotword', hotword);
+detector.on('hotword', function (i, hw) {
+	console.log('hotword', hw);
 	receivedPlead();
 });
 
