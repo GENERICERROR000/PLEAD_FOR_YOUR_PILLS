@@ -188,4 +188,9 @@ blinkLed(greenLed, 1, 500);
 closePillBox();
 
 // start listening 
-listener.stream().pipe(detector);
+listener
+.stream()
+.on('error', err => {
+	console.error('recorder threw an error:', err)
+})
+.pipe(detector);
