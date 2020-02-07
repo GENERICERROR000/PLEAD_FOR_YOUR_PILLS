@@ -27,8 +27,6 @@ const Record = require('node-record-lpcm16');
 
 const Gpio = Pigpio.Gpio;
 
-var ledBlinkCount = 0;
-
 const redLed = new Gpio(5, {
 	mode: Gpio.OUTPUT
 });
@@ -37,7 +35,9 @@ const greenLed = new Gpio(6, {
 	mode: Gpio.OUTPUT
 });
 
-function blinkLed(led, numberBlinks, time, blinkCount = 1) {
+var ledBlinkCount = 0;
+
+function blinkLed(led, numberBlinks, time, blinkCount=1) {
 	ledBlinkCount += 1;
 	ledOn(led);
 
@@ -127,16 +127,16 @@ const Detector = Snowboy.Detector;
 const models = new Models();
 
 const hotwords = [
-	["begging", "0.5"],
-	["die", "0.5"],
-	["give", "0.5"],
-	["have", "0.5"],
-	["help", "0.5"],
-	["let", "0.5"],
-	["life", "0.5"],
-	["live", "0.5"],
-	["need", "0.5"],
-	["please", "0.5"]
+	["begging", "0.2"],
+	["die", "0.2"],
+	["give", "0.2"],
+	["have", "0.2"],
+	["help", "0.2"],
+	["let", "0.2"],
+	["life", "0.2"],
+	["live", "0.2"],
+	["need", "0.2"],
+	["please", "0.2"]
 ];
 
 hotwords.forEach(hw => {
@@ -153,6 +153,10 @@ const detector = new Detector({
 	models: models,
 	audioGain: 2.0,
 	applyFrontend: false
+});
+
+detector.on('silence', function () {
+	console.log('silence');
 });
 
 detector.on('hotword', function (i, hw) {
@@ -178,7 +182,7 @@ const listener = Record.record({
 console.log('Starting listener...');
 
 // flash leds
-blinkLed(REDLed, 1, 500);
+blinkLed(redLed, 1, 500);
 blinkLed(greenLed, 1, 500);
 
 // make sure box is closed
