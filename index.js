@@ -100,7 +100,7 @@ function receivedPlead() {
 }
 
 function handleUnlock() {
-	blinkLed(greenLed, 1, 1000)
+	// blinkLed(greenLed, 1, 1000)
 	openPillBox();
 
 	setTimeout(() => {
@@ -112,7 +112,7 @@ function handleUnlock() {
 function handlePlead() {
 	pleads += 1;
 
-	blinkLed(greenLed, 1, 500, 2)
+	// blinkLed(greenLed, 1, 500, 2)
 }
 
 function resetPleads() {
@@ -182,8 +182,8 @@ const listener = Record.record({
 console.log('Starting listener...');
 
 // flash leds
-blinkLed(redLed, 1, 500);
-blinkLed(greenLed, 1, 500);
+blinkLed(redLed, 1, 1000);
+// blinkLed(greenLed, 1, 500);
 
 // make sure box is closed
 closePillBox();
