@@ -15,6 +15,10 @@
 	Noah Kernis and Ben Moll
 */
 
+// TODO: fn to randomly change number of pleads need
+// - Between 1 and 6 
+// - Resets every 2 min (unless plead heard recently?)
+
 const Pigpio = require('pigpio');
 const Snowboy = require('snowboy');
 const Record = require('node-record-lpcm16');
@@ -25,25 +29,15 @@ const Gpio = Pigpio.Gpio;
 
 var ledBlinkCount = 0;
 
-// WARN: SET CORRECT PIN NUMBER
-const redLed = new Gpio(8, {
+const redLed = new Gpio(5, {
 	mode: Gpio.OUTPUT
 });
 
-// WARN: SET CORRECT PIN NUMBER
-const greenLed = new Gpio(9, {
+const greenLed = new Gpio(6, {
 	mode: Gpio.OUTPUT
 });
 
-function ledOn(led) {
-	led.digitalWrite(1);
-}
-
-function ledOff(led) {
-	led.digitalWrite(0);
-}
-
-function blinkLed(led, numberBlinks, time, blinkCount=1) {
+function blinkLed(led, numberBlinks, time, blinkCount = 1) {
 	ledBlinkCount += 1;
 	ledOn(led);
 
@@ -55,9 +49,17 @@ function blinkLed(led, numberBlinks, time, blinkCount=1) {
 		} else {
 			setTimeout(() => {
 				blinkLed(led, numberBlinks, time, blinkCount);
-			}, time)
+			}, time);
 		}
 	}, time);
+}
+
+function ledOn(led) {
+	led.digitalWrite(1);
+}
+
+function ledOff(led) {
+	led.digitalWrite(0);
 }
 
 // servo pulses at 50Hz on the GPIO
@@ -68,8 +70,7 @@ const pulseWidthOpen = 1000;
 // WARN: Set correct number
 const pulseWidthClose = 2000;
 
-// WARN: SET CORRECT PIN NUMBER
-const motor = new Gpio(10, {
+const motor = new Gpio(13, {
 	mode: Gpio.OUTPUT
 });
 
@@ -87,7 +88,7 @@ function closePillBox() {
 
 // NOTE: -----> Plead State <-----
 
-var pleadsNeeded = 1;
+var pleadsNeeded = 3;
 var pleads = 0;
 
 function receivedPlead() {
