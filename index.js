@@ -125,6 +125,28 @@ const Models = Snowboy.Models;
 const Detector = Snowboy.Detector;
 
 const models = new Models();
+
+const hotwords = [
+	["begging", "0.5"],
+	["die", "0.5"],
+	["give", "0.5"],
+	["have", "0.5"],
+	["help", "0.5"],
+	["let", "0.5"],
+	["life", "0.5"],
+	["live", "0.5"],
+	["need", "0.5"],
+	["please", "0.5"]
+];
+
+hotwords.forEach(hw => {
+	models.add({
+		file: "resources/models/" + hw[0] + ".pmdl",
+		hotwords: hw[0],
+		sensitivity: hw[1]
+	})
+})
+
 const detector = new Detector({
 	resource: "node_modules/snowboy/resources/common.res",
 	language: 'en-US',
@@ -132,27 +154,6 @@ const detector = new Detector({
 	audioGain: 2.0,
 	applyFrontend: false
 });
-
-const hotwords = [
-	['begging', "0.5"],
-	['die', "0.5"],
-	['give', "0.5"],
-	['have', "0.5"],
-	['help', "0.5"],
-	['let', "0.5"],
-	['life', "0.5"],
-	['live', "0.5"],
-	['need', "0.5"],
-	['please', "0.5"]
-];
-
-hotwords.forEach(hw => {
-	models.add({
-		file: "resources/models/" + hw[0] + ".pmdl",
-		sensitivity: hw[1],
-		hotwords: hw[0]
-	})
-})
 
 detector.on('hotword', function (i, hw) {
 	console.log('hotword', hw);
