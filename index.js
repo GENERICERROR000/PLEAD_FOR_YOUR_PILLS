@@ -135,16 +135,16 @@ const Detector = Snowboy.Detector;
 const models = new Models();
 
 const hotwords = [
-	["begging", "0.7"],
-	["die", "0.7"],
+	["begging", "0.6"],
+	["die", "0.6"],
 	["give", "0.4"],
 	["have", "0.4"],
-	["help", "0.7"],
-	["let", "0.7"],
-	["life", "0.7"],
+	["help", "0.6"],
+	["let", "0.6"],
+	["life", "0.6"],
 	["live", "0.4"],
-	["need", "0.7"],
-	["please", "0.7"]
+	["need", "0.6"],
+	["please", "0.6"]
 ];
 
 hotwords.forEach(hotword => {
@@ -179,6 +179,10 @@ detector.on('error', function () {
 // NOTE: -----> Start Everything <-----
 
 console.log('Starting listener...');
+
+// maker leds off
+redLed.digitalWrite(0);
+greenLed.digitalWrite(0);
 
 // flash leds
 blinkLed(redLed, 2, 500);
