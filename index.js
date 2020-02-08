@@ -59,11 +59,11 @@ function blinkLed(led, numberBlinks=1, timeout=1000) {
 }
 
 function stopBlink(interval, numberBlinks, timeout) {
-	let timeout = numberBlinks * timeout;
+	let newTimeout = numberBlinks * timeout;
 
 	setTimeout(() => {
 		clearInterval(interval);
-	}, timeout);
+	}, newTimeout);
 }
 
 function changeLedState(led) {
