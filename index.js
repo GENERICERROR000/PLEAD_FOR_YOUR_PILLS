@@ -67,7 +67,7 @@ function stopBlink(interval, numberBlinks, timeout) {
 }
 
 function changeLedState(led) {
-	let newLedState = +!led.digitalRead()
+	let newLedState = +!led.digitalRead();
 
 	led.digitalWrite(newLedState);
 }
@@ -110,7 +110,7 @@ function receivedPlead() {
 	if (pleads == pleadsNeeded) {
 		handleUnlock();
 	} else {
-		blinkLed(redLed)
+		blinkLed(redLed);
 	}
 }
 
