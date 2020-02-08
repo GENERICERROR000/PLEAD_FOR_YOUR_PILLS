@@ -15,9 +15,11 @@
 	Noah Kernis and Ben Moll
 */
 
-// TODO: fn to randomly change number of pleads need
-// - Between 1 and 6 
-// - Resets every 2 min (unless plead heard recently?)
+// TODO:
+// - fn to randomly change number of pleads need 
+// 		- Between 1 and 6 
+// 		- Resets every 2 min (unless plead heard recently?)
+// - Fix blink Fn
 
 const Pigpio = require('pigpio');
 const Snowboy = require('snowboy');
@@ -36,6 +38,8 @@ const listener = Record.record({
 
 const Gpio = Pigpio.Gpio;
 
+// NOTE: -----> LED <-----
+
 const redLed = new Gpio(5, {
 	mode: Gpio.OUTPUT
 });
@@ -44,40 +48,37 @@ const greenLed = new Gpio(6, {
 	mode: Gpio.OUTPUT
 });
 
-var ledBlinkCount = 0;
+function blinkLed(led, numberBlinks=1, timeout=1000) {
+	changeLedState(led, ledState);
 
-function blinkLed(led, numberBlinks, time, blinkCount=1) {
-	// ledBlinkCount += 1;
-	ledOn(led);
+	let interval = setInterval(() => {
+		changeLedState(led, ledState);
+	}, timeout);
+
+	stopBlink(interval, numberBlinks, timeout);
+}
+
+function stopBlink(interval, numberBlinks, timeout) {
+	let timeout = numberBlinks * timeout;
 
 	setTimeout(() => {
-		ledOff(led);
-
-		// if (ledBlinkCount == blinkCount) {
-		// 	ledBlinkCount = 0;
-		// } else {
-		// 	setTimeout(() => {
-		// 		blinkLed(led, numberBlinks, time, blinkCount);
-		// 	}, time);
-		// }
-	}, time);
+		clearInterval(interval);
+	}, timeout);
 }
 
-function ledOn(led) {
-	led.digitalWrite(1);
+function changeLedState(led) {
+	let newLedState = +!led.digitalRead()
+
+	led.digitalWrite(newLedState);
 }
 
-function ledOff(led) {
-	led.digitalWrite(0);
-}
+// NOTE: -----> Servo <-----
 
 // servo pulses at 50Hz on the GPIO
 // 0 (off), 500 (most anti-clockwise) to 2500 (most clockwise)
 // pulse width in microseconds
-// WARN: Set Correct number
-const pulseWidthOpen = 1000;
-// WARN: Set correct number
 const pulseWidthClose = 2000;
+const pulseWidthOpen = 1000;
 
 const motor = new Gpio(13, {
 	mode: Gpio.OUTPUT
@@ -87,7 +88,6 @@ function openPillBox() {
 	console.log('Unlocking Pill Box...');
 
 	motor.servoWrite(pulseWidthOpen);
-	
 	listener.pause();
 }
 
@@ -95,7 +95,7 @@ function closePillBox() {
 	console.log('Locking Pill Box...');
 
 	motor.servoWrite(pulseWidthClose);
-
+	resetPleads();
 	listener.resume();
 }
 
@@ -110,18 +110,17 @@ function receivedPlead() {
 	if (pleads == pleadsNeeded) {
 		handleUnlock();
 	} else {
-		blinkLed(redLed, 1, 1000, 2)
+		blinkLed(redLed)
 	}
 }
 
 function handleUnlock() {
-	blinkLed(greenLed, 1, 120000)
+	blinkLed(greenLed, 1, 60000)
 	openPillBox();
 
 	setTimeout(() => {
 		closePillBox();
-		resetPleads();
-	}, 120000);
+	}, 60000);
 }
 
 function resetPleads() {
@@ -136,23 +135,23 @@ const Detector = Snowboy.Detector;
 const models = new Models();
 
 const hotwords = [
-	["begging", "0.5"],
-	["die", "0.5"],
-	["give", "0.5"],
-	["have", "0.5"],
-	["help", "0.5"],
-	["let", "0.5"],
-	["life", "0.5"],
-	["live", "0.5"],
-	["need", "0.5"],
-	["please", "0.5"]
+	["begging", "0.7"],
+	["die", "0.7"],
+	["give", "0.4"],
+	["have", "0.4"],
+	["help", "0.7"],
+	["let", "0.7"],
+	["life", "0.7"],
+	["live", "0.4"],
+	["need", "0.7"],
+	["please", "0.7"]
 ];
 
-hotwords.forEach(hw => {
+hotwords.forEach(hotword => {
 	models.add({
-		file: "resources/models/" + hw[0] + ".pmdl",
-		hotwords: hw[0],
-		sensitivity: hw[1]
+		file: "resources/models/" + hotword[0] + ".pmdl",
+		hotwords: hotword[0],
+		sensitivity: hotword[1]
 	})
 })
 
@@ -168,8 +167,8 @@ detector.on('silence', function () {
 	console.log('silence');
 });
 
-detector.on('hotword', function (i, hw) {
-	console.log('hotword', hw);
+detector.on('hotword', function (i, hotword) {
+	console.log('hotword', hotword);
 	receivedPlead();
 });
 
@@ -182,8 +181,8 @@ detector.on('error', function () {
 console.log('Starting listener...');
 
 // flash leds
-blinkLed(redLed, 1, 500);
-blinkLed(greenLed, 1, 500);
+blinkLed(redLed, 2, 500);
+blinkLed(greenLed, 2, 500);
 
 // make sure box is closed
 closePillBox();
