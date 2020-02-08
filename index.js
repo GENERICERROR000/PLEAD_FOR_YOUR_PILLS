@@ -49,10 +49,10 @@ const greenLed = new Gpio(6, {
 });
 
 function blinkLed(led, numberBlinks=1, timeout=1000) {
-	changeLedState(led, ledState);
+	changeLedState(led);
 
 	let interval = setInterval(() => {
-		changeLedState(led, ledState);
+		changeLedState(led);
 	}, timeout);
 
 	stopBlink(interval, numberBlinks, timeout);
