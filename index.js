@@ -15,12 +15,6 @@
 	Noah Kernis and Ben Moll
 */
 
-// TODO:
-// - fn to randomly change number of pleads need 
-// 		- Between 1 and 6 
-// 		- Resets every 2 min (unless plead heard recently?)
-// - Fix blink Fn
-
 const Pigpio = require('pigpio');
 const Snowboy = require('snowboy');
 const Record = require('node-record-lpcm16');
@@ -160,7 +154,7 @@ const detector = new Detector({
 	resource: "node_modules/snowboy/resources/common.res",
 	language: 'en-US',
 	models: models,
-	audioGain: 4.0,
+	audioGain: 2.0,
 	applyFrontend: false
 });
 
