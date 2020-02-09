@@ -32,8 +32,6 @@ const listener = Record.record({
 
 const Gpio = Pigpio.Gpio;
 
-// NOTE: -----> LED <-----
-
 const redLed = new Gpio(5, {
 	mode: Gpio.OUTPUT
 });
@@ -41,6 +39,8 @@ const redLed = new Gpio(5, {
 const greenLed = new Gpio(6, {
 	mode: Gpio.OUTPUT
 });
+
+// NOTE: -----> LED Blink <-----
 
 function blinkLed(led, numberBlinks=1, timeout=1000) {
 	changeLedState(led);
@@ -71,6 +71,7 @@ function stopBlink(interval, numberBlinks, timeout, led) {
 
 // servo pulses at 50Hz on the GPIO
 // 0 (off), 500 (most anti-clockwise) to 2500 (most clockwise)
+
 // pulse width in microseconds
 const pulseWidthClose = 2000;
 const pulseWidthOpen = 1000;
@@ -89,15 +90,30 @@ function openPillBox() {
 function closePillBox() {
 	console.log('Locking Pill Box...');
 
-	motor.servoWrite(pulseWidthClose);
 	resetPleads();
-	listener.resume();
+	blinkLed(greenLed, 3, 500);
+	blinkLed(redLed, 3, 500);
+	motor.servoWrite(pulseWidthClose);
+
+	// make sure box is closed before start listening 
+	setTimeout(() => {
+		listener.resume();
+	}, 1500);
+}
+
+function handleUnlock() {
+	blinkLed(greenLed, 1, 30000);
+	openPillBox();
+
+	setTimeout(() => {
+		closePillBox();
+	}, 30000);
 }
 
 // NOTE: -----> Plead State <-----
 
-var pleadsNeeded = 3;
-var pleads = 0;
+const pleadsNeeded = 3;
+let pleads = 0;
 
 function receivedPlead() {
 	pleads += 1;
@@ -107,15 +123,6 @@ function receivedPlead() {
 	} else {
 		blinkLed(redLed);
 	}
-}
-
-function handleUnlock() {
-	blinkLed(greenLed, 1, 30000)
-	openPillBox();
-
-	setTimeout(() => {
-		closePillBox();
-	}, 30000);
 }
 
 function resetPleads() {
@@ -175,7 +182,7 @@ detector.on('error', function () {
 
 console.log('Starting listener...');
 
-// maker leds off
+// make sure leds are off
 redLed.digitalWrite(0);
 greenLed.digitalWrite(0);
 
