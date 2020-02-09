@@ -58,18 +58,18 @@ function blinkLed(led, numberBlinks=1, timeout=1000) {
 	stopBlink(interval, numberBlinks, timeout);
 }
 
-function stopBlink(interval, numberBlinks, timeout) {
-	let newTimeout = numberBlinks * timeout;
-
-	setTimeout(() => {
-		clearInterval(interval);
-	}, newTimeout);
-}
-
 function changeLedState(led) {
 	let newLedState = +!led.digitalRead();
 
 	led.digitalWrite(newLedState);
+}
+
+function stopBlink(interval, numberBlinks, timeout) {
+	let newTimeout = 2 * timeout * numberBlinks;
+
+	setTimeout(() => {
+		clearInterval(interval);
+	}, newTimeout);
 }
 
 // NOTE: -----> Servo <-----
