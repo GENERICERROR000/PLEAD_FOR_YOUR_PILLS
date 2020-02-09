@@ -55,7 +55,7 @@ function blinkLed(led, numberBlinks=1, timeout=1000) {
 		changeLedState(led);
 	}, timeout);
 
-	stopBlink(interval, numberBlinks, timeout);
+	stopBlink(interval, numberBlinks, timeout, led);
 }
 
 function changeLedState(led) {
@@ -64,11 +64,12 @@ function changeLedState(led) {
 	led.digitalWrite(newLedState);
 }
 
-function stopBlink(interval, numberBlinks, timeout) {
+function stopBlink(interval, numberBlinks, timeout, led) {
 	let newTimeout = 2 * timeout * numberBlinks;
 
 	setTimeout(() => {
 		clearInterval(interval);
+		led.digitalWrite(0)
 	}, newTimeout);
 }
 
