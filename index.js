@@ -110,12 +110,12 @@ function receivedPlead() {
 }
 
 function handleUnlock() {
-	blinkLed(greenLed, 1, 60000)
+	blinkLed(greenLed, 1, 30000)
 	openPillBox();
 
 	setTimeout(() => {
 		closePillBox();
-	}, 60000);
+	}, 30000);
 }
 
 function resetPleads() {
