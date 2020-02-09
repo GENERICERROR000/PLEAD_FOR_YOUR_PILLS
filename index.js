@@ -65,11 +65,11 @@ function changeLedState(led) {
 }
 
 function stopBlink(interval, numberBlinks, timeout, led) {
-	let newTimeout = 2 * numberBlinks * (timeout - 200);
+	let newTimeout = 2 * timeout * numberBlinks;
 
 	setTimeout(() => {
 		clearInterval(interval);
-		// led.digitalWrite(0)
+		led.digitalWrite(0)
 	}, newTimeout);
 }
 
