@@ -159,7 +159,7 @@ const detector = new Detector({
 	resource: "node_modules/snowboy/resources/common.res",
 	language: 'en-US',
 	models: models,
-	audioGain: 2.0,
+	audioGain: 4.0,
 	applyFrontend: false
 });
 
