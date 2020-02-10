@@ -82,7 +82,8 @@ const motor = new Gpio(13, {
 
 function openPillBox() {
 	console.log('Unlocking Pill Box...');
-
+	
+	greenLed.digitalWrite(1)
 	motor.servoWrite(pulseWidthOpen);
 	listener.pause();
 }
@@ -90,17 +91,17 @@ function openPillBox() {
 function closePillBox() {
 	console.log('Locking Pill Box...');
 
+	greenLed.digitalWrite(0)
 	resetPleads();
 
 	blinkLed(greenLed, 3, 500);
 	blinkLed(redLed, 3, 500);
-	
+
 	motor.servoWrite(pulseWidthClose);
 	listener.resume();
 }
 
 function handleUnlock() {
-	blinkLed(greenLed, 1, 30000);
 	openPillBox();
 
 	setTimeout(closePillBox, 30000);
