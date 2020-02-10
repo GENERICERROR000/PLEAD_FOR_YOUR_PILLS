@@ -91,12 +91,12 @@ function closePillBox() {
 	console.log('Locking Pill Box...');
 
 	resetPleads();
+
 	blinkLed(greenLed, 3, 500);
 	blinkLed(redLed, 3, 500);
+	
 	motor.servoWrite(pulseWidthClose);
-
-	// make sure box is closed before start listening 
-	setTimeout(listener.resume, 1500);
+	listener.resume();
 }
 
 function handleUnlock() {
