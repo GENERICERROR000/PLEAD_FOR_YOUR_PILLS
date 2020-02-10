@@ -96,18 +96,14 @@ function closePillBox() {
 	motor.servoWrite(pulseWidthClose);
 
 	// make sure box is closed before start listening 
-	setTimeout(() => {
-		listener.resume();
-	}, 1500);
+	setTimeout(listener.resume, 1500);
 }
 
 function handleUnlock() {
 	blinkLed(greenLed, 1, 30000);
 	openPillBox();
 
-	setTimeout(() => {
-		closePillBox();
-	}, 30000);
+	setTimeout(closePillBox, 30000);
 }
 
 // NOTE: -----> Plead State <-----
@@ -161,7 +157,7 @@ const detector = new Detector({
 	resource: "node_modules/snowboy/resources/common.res",
 	language: 'en-US',
 	models: models,
-	audioGain: 2.0,
+	audioGain: 1.0,
 	applyFrontend: false
 });
 
